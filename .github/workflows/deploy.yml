@@ -15,7 +15,7 @@ jobs:
     - name: Deploy Application
       run: |
         # NAVEGAR A LA CARPETA DEL PROYECTO EN PRODUCCIÓN
-        cd /var/www/lineabase
+        cd /var/www/sicmo
         
         # Actualizar código (Forzar sincronización exacta con el repo)
         git fetch origin main
