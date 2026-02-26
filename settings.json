@@ -1,0 +1,10 @@
+{
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    },
+    "files.associations": {
+        "*.blade.php": "blade"
+    },
+    "intelephense.environment.phpVersion": "8.2"
+}

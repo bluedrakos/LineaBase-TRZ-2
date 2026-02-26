@@ -1,0 +1,40 @@
+name: Deploy to Production (Self-Hosted Linux)
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Deploy Application
+      run: |
+        # NAVEGAR A LA CARPETA DEL PROYECTO EN PRODUCCIÓN
+        cd /var/www/lineabase
+        
+        # Actualizar código (Forzar sincronización exacta con el repo)
+        git fetch origin main
+        git reset --hard origin/main
+        
+        # Poner en modo mantenimiento
+        php artisan down
+        
+        # Instalar dependencias
+        composer install --no-interaction --prefer-dist --optimize-autoloader
+        npm install
+        npm run build
+        
+        # Migraciones y caché
+        php artisan migrate --force
+        php artisan config:cache
+        php artisan route:cache
+        php artisan view:cache
+        
+        # Levantar sitio
+        php artisan up
+      shell: bash
