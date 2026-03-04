@@ -1,4 +1,4 @@
-﻿import { FloatingLabelInput } from '@/components/FloatingLabelInput';
+﻿import { FloatingLabelInput } from '@/Components/FloatingLabelInput';
 import SvgMitra from '@/shared/components/brand/SvgMitra';
 import { cn } from '@/shared/lib/utils';
 import { Alert, AlertDescription, AlertTitle } from '@/shared/ui/alert';
