@@ -12,6 +12,7 @@ class ModuloAccionSeeder extends Seeder
     public function run(): void
     {
         $modulosSlugs = [
+            'panel',
             'gestion-usuarios',
             'gestion-modulos',
             'gestion-de-permisos',

@@ -44,7 +44,7 @@ class Rol extends Model
 
     public function navegacionSidebar()
     {
-        // Obtener módulos activos con permiso "listar", incluyendo grupoMenu
+        // Obtener módulos activos con permiso "listar", incluyendo grupoMenu y tipoModulo
         $modulos = $this->permisos()
             ->whereHas('moduloAccion.accion', function ($query) {
                 $query->where('acc_slug', 'listar');
@@ -52,97 +52,83 @@ class Rol extends Model
             ->whereHas('moduloAccion.modulo', function ($query) {
                 $query->where('mod_activo', true);
             })
-            ->with('moduloAccion.modulo.grupoMenu')
+            ->with(['moduloAccion.modulo.grupoMenu', 'moduloAccion.modulo.tipoModulo'])
             ->get()
             ->map(fn($permiso) => $permiso->moduloAccion->modulo)
             ->filter(fn($mod) => $mod && $mod->mod_activo)
             ->unique('mod_id')
             ->values();
 
-        // Preparar datos de cada módulo con info del grupo
         $modulosMap = $modulos->map(function ($mod) {
             $grupo = $mod->grupoMenu;
+            $tipo = $mod->tipoModulo;
 
             return [
                 'mod_id'       => (int) $mod->mod_id,
-                'mod_padre_id' => $mod->mod_padre_id ? (int) $mod->mod_padre_id : null,
+                'tmo_id'       => $tipo ? (int) $tipo->tmo_id : null,
+                'tipo_nombre'  => $tipo ? $tipo->tmo_nombre : 'Sueltos',
+                'tipo_icono'   => $tipo ? $tipo->tmo_icono : 'Folder',
                 'mod_nombre'   => $mod->mod_nombre,
                 'mod_slug'     => $mod->mod_slug,
                 'mod_icono'    => $mod->mod_icono ?: 'Circle',
                 'mod_orden'    => (int) ($mod->mod_orden ?? 0),
-                'mod_ruta'     => '/dashboard/' . $mod->mod_slug,
+                'mod_ruta'     => $mod->mod_slug === 'dashboard' ? '/dashboard' : '/dashboard/' . $mod->mod_slug,
                 'grupo_slug'   => $grupo?->gme_slug ?? 'general',
                 'grupo_nombre' => $grupo?->gme_nombre ?? 'GENERAL',
                 'grupo_orden'  => (int) ($grupo?->gme_orden ?? 1),
             ];
         })->values();
 
-        // Agrupar por grupo_slug y armar la estructura de secciones
         $grouped = $modulosMap
             ->groupBy('grupo_slug')
             ->map(function ($mods, $slug) {
                 $first = $mods->first();
                 $mods = $mods->sortBy('mod_orden')->values();
 
-                // Separar módulos raíz de hijos
-                $childrenByParent = $mods->whereNotNull('mod_padre_id')->groupBy('mod_padre_id');
-                $roots = $mods->whereNull('mod_padre_id')->values();
+                // Separamos los que tienen tipo (y agrupamos por tipo) y los sueltos
+                $tipos = $mods->whereNotNull('tmo_id')->groupBy('tmo_id');
+                $sueltos = $mods->whereNull('tmo_id')->values();
 
-                $items = $roots->map(function ($root) use ($childrenByParent) {
-                    $children = ($childrenByParent[$root['mod_id']] ?? collect())
-                        ->sortBy('mod_orden')
-                        ->map(fn($child) => [
-                            'title' => $child['mod_nombre'],
-                            'url'   => $child['mod_ruta'],
-                            'icon'  => $child['mod_icono'],
-                        ])
-                        ->values()
-                        ->all();
+                $items = collect();
 
-                    return [
-                        'title' => $root['mod_nombre'],
-                        'url'   => $children ? null : $root['mod_ruta'],
-                        'icon'  => $root['mod_icono'],
-                        'items' => $children,
-                    ];
-                })->values();
-
-                // Grupo GENERAL: asegurar "Panel" como primera entrada
-                if ($slug === 'general' && !$items->contains(fn($i) => mb_strtolower($i['title']) === 'panel')) {
-                    $items->prepend([
-                        'title' => 'Panel',
-                        'url'   => '/dashboard',
-                        'icon'  => 'LayoutDashboard',
-                        'items' => [],
+                foreach ($tipos as $tmoId => $modulosPorTipo) {
+                    $primerMod = $modulosPorTipo->first();
+                    $items->push([
+                        'title' => $primerMod['tipo_nombre'],
+                        'url'   => null,
+                        'icon'  => $primerMod['tipo_icono'],
+                        'orden' => $primerMod['mod_orden'],
+                        'items' => $modulosPorTipo->map(fn($m) => [
+                            'title' => $m['mod_nombre'],
+                            'url'   => $m['mod_ruta'],
+                            'icon'  => $m['mod_icono'],
+                        ])->values()->all(),
                     ]);
                 }
+
+                foreach ($sueltos as $suelto) {
+                    $items->push([
+                        'title' => $suelto['mod_nombre'],
+                        'url'   => $suelto['mod_ruta'],
+                        'icon'  => $suelto['mod_icono'],
+                        'items' => [],
+                        'orden' => $suelto['mod_orden'],
+                    ]);
+                }
+
+                $items = $items->sortBy('orden')->values();
+
+                $items = $items->sortBy('orden')->values();
 
                 return [
                     'grupo_nombre' => $first['grupo_nombre'] ?? strtoupper($slug),
                     'grupo_slug'   => $slug,
                     'grupo_orden'  => (int) ($first['grupo_orden'] ?? 999),
-                    'items'        => $items->filter(fn($i) => !empty($i['url']) || !empty($i['items']))->values()->all(),
+                    'items'        => $items->map(function ($i) { unset($i['orden']); return $i; })->all(),
                 ];
             })
             ->sortBy('grupo_orden')
             ->values();
-
-        // Asegurar que siempre exista el grupo GENERAL con Panel
-        if (!$grouped->contains(fn($g) => ($g['grupo_slug'] ?? null) === 'general')) {
-            $grouped->prepend([
-                'grupo_nombre' => 'GENERAL',
-                'grupo_slug'   => 'general',
-                'grupo_orden'  => 1,
-                'items'        => [
-                    [
-                        'title' => 'Panel',
-                        'url'   => '/dashboard',
-                        'icon'  => 'LayoutDashboard',
-                        'items' => [],
-                    ],
-                ],
-            ]);
-        }
 
         return $grouped;
     }
@@ -154,7 +140,12 @@ class Rol extends Model
                 if (is_int($modulo)) {
                     $query->where('mod_id', $modulo);
                 } else {
-                    $query->where('mod_slug', $modulo);
+                    $norm = str_replace('_', '-', strtolower($modulo));
+                    $query->where(function($q) use ($modulo, $norm) {
+                        $q->where('mod_codigo', $modulo)
+                          ->orWhere('mod_slug', $modulo)
+                          ->orWhere('mod_slug', $norm);
+                    });
                 }
             })
             ->whereHas('moduloAccion.accion', function ($query) use ($accion) {

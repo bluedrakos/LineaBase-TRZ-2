@@ -20,6 +20,7 @@ class Modulo extends Model
 
     protected $fillable = [
         'mod_nombre',
+        'mod_codigo',
         'mod_slug',
         'mod_icono',
         'mod_orden',
@@ -27,6 +28,7 @@ class Modulo extends Model
         'tmo_id',
         'gme_id',
         'mod_padre_id',
+        'mod_directorio',
         'mod_creado_por',
         'mod_actualizado_por',
     ];

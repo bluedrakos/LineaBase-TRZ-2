@@ -22,7 +22,7 @@ class StoreUsuarioRequest extends FormRequest
         return [
             'usu_nombre'     => 'required|string|max:50',
             'usu_apellidos'  => 'required|string|max:100',
-            'usu_rut'        => 'required|string|max:12|unique:usuarios,usu_rut',
+            'usu_rut'        => 'required|string|max:9|unique:usuarios,usu_rut',
             'usu_correo'     => 'required|email|max:100|unique:usuarios,usu_correo',
             'usu_telefono'   => 'nullable|string|max:20',
             'usu_cargo'      => 'nullable|string',

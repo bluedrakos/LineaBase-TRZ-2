@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["src/*"],
+            "@components/*": ["src/Components/*"],
+            "@app/*": ["src/app/*"],
+            "@shared/*": ["src/shared/*"],
+            "@core/*": ["src/core/*"],
+            "@modules/*": ["src/modules/*"],
+            "@inertiajs/react": ["src/shared/inertia-bridge/index.jsx"]
+        }
+    },
+    "exclude": ["node_modules", "public"]
+}

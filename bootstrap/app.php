@@ -12,16 +12,15 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up'
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->statefulApi();
+
         $middleware->web(append: [
-            \App\Http\Middleware\HandleInertiaRequests::class,
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
         ]);
 
         $middleware->alias([
-            'acc.mod' => \App\Http\Middleware\PermitirModuloAccion::class
+            'api.acc.mod' => \App\Http\Middleware\ApiPermitirModuloAccion::class,
         ]);
-
-        //
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

@@ -10,48 +10,31 @@ class GrupoMenuSeeder extends Seeder
 {
     public function run(): void
     {
-        // Crear los grupos del sidebar
-        GrupoMenu::updateOrCreate(
-            ['gme_slug' => 'general'],
-            [
-                'gme_nombre' => 'GENERAL',
-                'gme_orden'  => 1,
-                'gme_activo' => true,
-            ]
-        );
+        $grupos = [
+            ['slug' => 'dashboards', 'nombre' => 'Dashboards', 'orden' => 1],
+            ['slug' => 'general', 'nombre' => 'General', 'orden' => 2],
+            ['slug' => 'administracion', 'nombre' => 'Administración', 'orden' => 3],
+            ['slug' => 'sistema', 'nombre' => 'Sistema', 'orden' => 4],
+            ['slug' => 'desarrollo', 'nombre' => 'Desarrollo', 'orden' => 5],
+        ];
 
-        GrupoMenu::updateOrCreate(
-            ['gme_slug' => 'administracion'],
-            [
-                'gme_nombre' => 'ADMINISTRACIÓN',
-                'gme_orden'  => 2,
-                'gme_activo' => true,
-            ]
-        );
-
-        GrupoMenu::updateOrCreate(
-            ['gme_slug' => 'sistema'],
-            [
-                'gme_nombre' => 'SISTEMA',
-                'gme_orden'  => 3,
-                'gme_activo' => true,
-            ]
-        );
+        foreach ($grupos as $g) {
+            GrupoMenu::updateOrCreate(
+                ['gme_slug' => $g['slug']],
+                [
+                    'gme_nombre' => $g['nombre'],
+                    'gme_orden'  => $g['orden'],
+                    'gme_activo' => true,
+                ]
+            );
+        }
 
         // Asignar módulos existentes a sus grupos
-        $grupos = DB::table('grupo_menu')->pluck('gme_id', 'gme_slug');
+        $gruposIds = DB::table('grupo_menu')->pluck('gme_id', 'gme_slug');
 
-        // Módulos de administración (Usuarios, Permisos, Instituciones)
-        DB::table('modulos')->whereIn('mod_slug', [
-            'gestion-usuarios',
-            'gestion-de-permisos',
-            'instituciones',
-        ])->update(['gme_id' => $grupos['administracion'] ?? null]);
-
-        // Módulos de sistema (Módulos, Auditorías)
-        DB::table('modulos')->whereIn('mod_slug', [
-            'gestion-modulos',
-            'auditorias',
-        ])->update(['gme_id' => $grupos['sistema'] ?? null]);
+        DB::table('modulos')->whereIn('mod_slug', ['panel'])->update(['gme_id' => $gruposIds['dashboards'] ?? null]);
+        DB::table('modulos')->whereIn('mod_slug', ['gestion-usuarios', 'gestion-de-permisos', 'instituciones'])->update(['gme_id' => $gruposIds['administracion'] ?? null]);
+        DB::table('modulos')->whereIn('mod_slug', ['auditorias'])->update(['gme_id' => $gruposIds['sistema'] ?? null]);
+        DB::table('modulos')->whereIn('mod_slug', ['gestion-modulos'])->update(['gme_id' => $gruposIds['desarrollo'] ?? null]);
     }
 }

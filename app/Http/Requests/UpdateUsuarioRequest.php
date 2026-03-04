@@ -37,7 +37,7 @@ class UpdateUsuarioRequest extends FormRequest
             'usu_rut' => [
                 'required',
                 'string',
-                'max:12',
+                'max:9',
                 Rule::unique('usuarios', 'usu_rut')->ignore($usuarioId, 'usu_id'),
             ],
             'usu_telefono' => 'nullable|string|max:15',

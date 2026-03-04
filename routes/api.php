@@ -1,12 +1,8 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\ConfigController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+Route::get('/config/branding', [ConfigController::class, 'getBranding']);
 
-use App\Http\Controllers\Api\SoapController;
-
-Route::get('/soap/usuarios', [SoapController::class, 'buscarUsuario']);
+require __DIR__ . '/api_v1.php';
