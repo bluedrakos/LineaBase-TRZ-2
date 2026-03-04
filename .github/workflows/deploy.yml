@@ -53,7 +53,7 @@ jobs:
           cd /var/www/sicmo
 
           # Poner en modo mantenimiento (si la app está viva)
-          php artisan down --allow=127.0.0.1 || true
+          php artisan down || true
 
           # Actualizar sólo el código backend desde el repo
           git fetch origin main
