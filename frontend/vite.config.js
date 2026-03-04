@@ -22,6 +22,12 @@ export default defineConfig({
         }
     },
     build: {
-        outDir: 'dist',
+        // Salida al directorio public de Laravel para que @vite lo sirva directamente
+        outDir: '../public/build',
+        emptyOutDir: true,
+        manifest: true,
+        rollupOptions: {
+            input: path.resolve(__dirname, 'src/app.jsx'),
+        }
     }
 });

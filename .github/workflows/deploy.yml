@@ -5,36 +5,77 @@ on:
     branches: [ "main" ]
 
 jobs:
-  deploy:
-    runs-on: self-hosted
-    
+  build-frontend:
+    name: "Build frontend (React/Vite)"
+    runs-on: ubuntu-latest
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-    - name: Deploy Application
-      run: |
-        # NAVEGAR A LA CARPETA DEL PROYECTO EN PRODUCCIÓN
-        cd /var/www/sicmo
-        
-        # Actualizar código (Forzar sincronización exacta con el repo)
-        git fetch origin main
-        git reset --hard origin/main
-        
-        # Poner en modo mantenimiento
-        php artisan down
-        
-        # Instalar dependencias
-        composer install --no-interaction --prefer-dist --optimize-autoloader
-        npm install
-        npm run build
-        
-        # Migraciones y caché
-        php artisan migrate --force
-        php artisan config:cache
-        php artisan route:cache
-        php artisan view:cache
-        
-        # Levantar sitio
-        php artisan up
-      shell: bash
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build
+
+      # El build queda en public/build (relativo a la raíz del proyecto)
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: public/build
+          retention-days: 1
+
+  deploy:
+    name: "Deploy Laravel + Frontend Build"
+    runs-on: self-hosted
+    needs: build-frontend
+
+    steps:
+      - name: Download frontend build
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-build
+          path: /tmp/frontend-build
+
+      - name: Deploy Application
+        run: |
+          # Navegar a la carpeta del proyecto en producción
+          cd /var/www/sicmo
+
+          # Poner en modo mantenimiento (si la app está viva)
+          php artisan down --allow=127.0.0.1 || true
+
+          # Actualizar sólo el código backend desde el repo
+          git fetch origin main
+          git reset --hard origin/main
+
+          # Limpiar del servidor lo que NO necesita producción
+          # (el runner ya compiló el frontend, aquí solo servimos el build)
+          rm -rf frontend node_modules package-lock.json
+
+          # Copiar el build del frontend generado en CI al directorio público
+          rm -rf public/build
+          cp -r /tmp/frontend-build ./public/build
+
+          # Instalar dependencias PHP (sin devDependencies)
+          composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+
+          # Migraciones y caché
+          php artisan migrate --force
+          php artisan config:cache
+          php artisan route:cache
+          php artisan view:cache
+
+          # Levantar sitio
+          php artisan up
+        shell: bash

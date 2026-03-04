@@ -143,16 +143,9 @@ class ModulosApiController extends ApiController
             ]);
         });
 
-        if ($modulo) {
-            $isLocal = app()->isLocal();
-            $directorio = "frontend/src/modules/{$modulo->mod_slug}";
-
-            if ($isLocal) {
-                $directorio = $this->frontendModuleScaffolder->ensure($modulo->mod_slug, $modulo->mod_nombre);
-                $this->backendModuleScaffolder->generate($modulo->mod_slug, $modulo->mod_nombre);
-            }
-            
-            $modulo->update(['mod_directorio' => $directorio]);
+        if ($modulo && app()->isLocal()) {
+            $this->frontendModuleScaffolder->ensure($modulo->mod_slug, $modulo->mod_nombre);
+            $this->backendModuleScaffolder->generate($modulo->mod_slug, $modulo->mod_nombre);
         }
 
         return $this->ok($modulo?->load('moduloAcciones.accion', 'tipoModulo', 'grupoMenu'), 'Modulo creado correctamente.', 201);
@@ -295,25 +288,20 @@ class ModulosApiController extends ApiController
             ]);
         });
 
-        $isLocal = app()->isLocal();
-        $directorio = $modulo->mod_directorio ?: "frontend/src/modules/{$validated['mod_slug']}";
-
-        if ($isLocal) {
+        if (app()->isLocal()) {
             $slugOriginal = (string) $modulo->getOriginal('mod_slug');
             $slugNuevo = $validated['mod_slug'];
 
             if ($slugOriginal !== $slugNuevo) {
                 // Solo renombrar si el slug cambió físicamente
-                $directorio = $this->frontendModuleScaffolder->rename(
+                $this->frontendModuleScaffolder->rename(
                     $slugOriginal,
                     $slugNuevo,
                     $validated['mod_nombre']
                 );
             }
-            // Si el slug es igual, NO llamamos a ensure() para no tocar el sistema de archivos innecesariamente
+            // Si el slug es igual, no tocamos el sistema de archivos
         }
-
-        $modulo->update(['mod_directorio' => $directorio]);
 
         return $this->ok($modulo->load('moduloAcciones.accion', 'tipoModulo', 'grupoMenu'), 'Modulo actualizado correctamente.');
     }
