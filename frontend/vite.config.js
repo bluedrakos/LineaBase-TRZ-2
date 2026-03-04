@@ -26,6 +26,8 @@ export default defineConfig({
         outDir: '../public/build',
         emptyOutDir: true,
         manifest: true,
+        // Aumenta el límite para evitar falsos errores en CI por chunks grandes
+        chunkSizeWarningLimit: 1000,
         rollupOptions: {
             input: path.resolve(__dirname, 'src/app.jsx'),
         }
