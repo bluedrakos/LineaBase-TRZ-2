@@ -32,9 +32,15 @@ export default function OlvidePassword() {
     } = useForm();
 
     const onSubmit = async (data) => {
-        await router.post('/reset-password/olvide-password', {
-            email: data.email,
-        });
+        const id = toast.loading('Enviando enlace...');
+        try {
+            await router.post('/api/v1/auth/olvide-password', {
+                email: data.email,
+            });
+            toast.success('Enlace de recuperación enviado. Revisa tu correo.', { id });
+        } catch (error) {
+            toast.error('No pudimos enviar el enlace. Verifica tu correo.', { id });
+        }
     };
 
     return (
@@ -60,7 +66,7 @@ export default function OlvidePassword() {
                                     <Input
                                         id="email"
                                         type="email"
-                                        {...register('email')}
+                                        {...register('email', { required: 'El correo electrónico es requerido' })}
                                     />
                                     {errors.email && (
                                         <p className="text-sm text-red-500">

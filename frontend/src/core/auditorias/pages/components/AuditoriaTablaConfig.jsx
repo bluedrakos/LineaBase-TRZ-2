@@ -59,7 +59,7 @@ export function AuditoriaTablaConfig({ onVer }) {
 
         {
             id: 'usuario',
-            accessorKey: 'usuario.usu_nombre',
+            accessorFn: (row) => row.usuario ? `${row.usuario.usu_nombre} ${row.usuario.usu_apellidos}` : 'Desconocido / Sistema',
             header: 'Usuario',
             meta: { filterVariant: 'select' },
             cell: ({ row }) => {
@@ -68,7 +68,7 @@ export function AuditoriaTablaConfig({ onVer }) {
                 if (!user) {
                     return (
                         <span className="text-gray-400 italic">
-                            Desconocido
+                            Desconocido / Sistema
                         </span>
                     );
                 }

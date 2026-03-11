@@ -6,9 +6,12 @@ use App\Http\Controllers\Api\ApiController;
 use App\Http\Responses\ApiResponse;
 use App\Models\Usuario;
 use App\Services\LdapAuth;
+use App\Mail\PasswordResetMail;
+use App\Mail\TokenOTPMail;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -76,12 +79,10 @@ class AuthApiController extends ApiController
         $user->usu_intentos = 0;
         $user->save();
 
-        $abilities = $this->resolveAbilities($user);
-        $token = $user->createToken($deviceName, $abilities)->plainTextToken;
+        // Autenticar la sesión en el guard web
+        \Illuminate\Support\Facades\Auth::guard('web')->login($user, $request->boolean('remember', false));
 
         return $this->ok([
-            'token' => $token,
-            'token_type' => 'Bearer',
             'user' => [
                 'usu_id' => $user->usu_id,
                 'usu_nombre' => $user->usu_nombre,
@@ -113,7 +114,10 @@ class AuthApiController extends ApiController
 
     public function logout(Request $request)
     {
-        $request->user()?->currentAccessToken()?->delete();
+        \Illuminate\Support\Facades\Auth::guard('web')->logout();
+        
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return $this->ok(null, 'Sesion cerrada correctamente.');
     }
@@ -141,20 +145,23 @@ class AuthApiController extends ApiController
         // En una API, el frontend maneja la URL. El backend solo genera el token.
         // Si el usuario es externo, se enviaria el mail con el token.
         if ($token) {
-            // Mail::to($user->usu_correo)->send(new PasswordResetMail(...));
+            $link = 'http://localhost:5173/reset-password/cambiar-password/' . $token;
+            Mail::to($user->usu_correo)->send(new PasswordResetMail($user->usu_correo, $user->usu_tipo, $link));
         }
 
         return $this->ok(['token' => $token], 'Se ha procesado su solicitud de recuperacion.');
     }
 
     /**
-     * Valida el token y envia el codigo OTP al correo.
+     * Valida el token y contraseñas tempranas y envia el codigo OTP al correo.
      */
-    public function sendOTP(Request $request)
+    public function sendOTP(Request $request, $token)
     {
-        $request->validate(['token' => 'required|string']);
+        $request->validate([
+            'password' => 'required|string|min:8|confirmed'
+        ]);
         
-        $user = Usuario::where('usu_passwordToken', $request->token)
+        $user = Usuario::where('usu_passwordToken', $token)
             ->where('usu_expiracionToken', '>=', now())
             ->first();
 
@@ -167,7 +174,7 @@ class AuthApiController extends ApiController
         $user->usu_otp_expiracion = now()->addMinutes(10);
         $user->save();
 
-        // Mail::to($user->usu_correo)->send(new TokenOTPMail($user->usu_correo, $tokenOTP));
+        Mail::to($user->usu_correo)->send(new TokenOTPMail($user->usu_correo, $tokenOTP));
 
         return $this->ok(null, 'Codigo de verificacion enviado a su correo.');
     }
@@ -175,15 +182,14 @@ class AuthApiController extends ApiController
     /**
      * Valida el OTP y cambia la contrasena.
      */
-    public function resetPassword(Request $request)
+    public function resetPassword(Request $request, $token)
     {
         $request->validate([
-            'token' => 'required|string',
             'otp' => 'required|string',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        $user = Usuario::where('usu_passwordToken', $request->token)
+        $user = Usuario::where('usu_passwordToken', $token)
             ->where('usu_expiracionToken', '>=', now())
             ->first();
 
@@ -191,7 +197,7 @@ class AuthApiController extends ApiController
             return $this->fail('Token no valido o expirado.', 422);
         }
 
-        if ($user->usu_otp !== $request->otp || $user->usu_otp_expiracion < now()) {
+        if ($user->usu_otp != $request->otp || $user->usu_otp_expiracion < now()) {
             return $this->fail('El codigo OTP es incorrecto o ha expirado.', 422);
         }
 
@@ -204,6 +210,27 @@ class AuthApiController extends ApiController
         $user->save();
 
         return $this->ok(null, 'Contrasena actualizada exitosamente.');
+    }
+
+    /**
+     * Permite al usuario volver a solicitar un OTP a su correo
+     */
+    public function reenviarOTP(Request $request, $token)
+    {
+        $user = Usuario::where('usu_passwordToken', $token)->first();
+
+        if (!$user) {
+            return $this->fail('Token no valido o expirado.', 422);
+        }
+
+        $tokenOTP = rand(100000, 999999);
+        $user->usu_otp = $tokenOTP;
+        $user->usu_otp_expiracion = now()->addMinutes(10);
+        $user->save();
+
+        Mail::to($user->usu_correo)->send(new TokenOTPMail($user->usu_correo, $tokenOTP));
+
+        return $this->ok(null, 'Codigo de verificacion reenviado a su correo.');
     }
 
     private function isValidCredential(Usuario $user, string $password): bool

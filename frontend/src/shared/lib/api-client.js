@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { handleApiError } from './ApiError';
 
 export const apiClient = axios.create({
     baseURL: '/api/v1',
@@ -10,24 +10,13 @@ export const apiClient = axios.create({
 });
 
 apiClient.interceptors.request.use((config) => {
-    const token = window.localStorage.getItem('token') || window.sessionStorage.getItem('token');
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-    }
+    // Las peticiones utilizan Cookies HttpOnly, configurado globalmente en bootstrap.js.
     return config;
 });
 
 apiClient.interceptors.response.use(
     (response) => response,
-    (error) => {
-        const payload = error?.response?.data;
-        const normalized = {
-            status: error?.response?.status ?? 500,
-            message: payload?.message ?? error.message ?? 'Error de red',
-            errors: payload?.errors ?? {},
-        };
-        return Promise.reject(normalized);
-    },
+    (error) => Promise.reject(handleApiError(error))
 );
 
 export function getApiData(response) {

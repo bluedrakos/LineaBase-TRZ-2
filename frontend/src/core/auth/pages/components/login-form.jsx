@@ -8,6 +8,7 @@ import { Label } from '@/shared/ui/label';
 import { Link, router, usePage } from '@/shared/app-bridge';
 import { AlertOctagon } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useAuth } from '@/shared/contexts/AuthContext';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -22,6 +23,7 @@ const loginSchema = z.object({
 
 export function LoginForm() {
     const navigate = useNavigate();
+    const { setUser, setSidebar, setPermisos } = useAuth();
     const [branding, setBranding] = useState({
         nombreSistema: 'Cargando...',
         descripcionSistema: '...',
@@ -70,27 +72,29 @@ export function LoginForm() {
         setErrorMsg('');
 
         try {
+            await axios.get('/sanctum/csrf-cookie');
             const response = await axios.post('/api/v1/auth/login', data);
             
             // Si el backend lo devuelve en formato estandar { success: true, data: { token: ... } }
             // o si lo devuelve plano { token: ... }
             const payload = response.data.data || response.data;
             
-                    if (payload && payload.token) {
+                    if (payload && payload.user) {
                         const storage = data.remember ? localStorage : sessionStorage;
-                        storage.setItem('token', payload.token);
                         storage.setItem('user', JSON.stringify(payload.user));
                         storage.setItem('sidebar', JSON.stringify(payload.sidebar));
                         storage.setItem('permisos', JSON.stringify(payload.permisos));
                         
                         const otherStorage = data.remember ? sessionStorage : localStorage;
-                        otherStorage.removeItem('token');
                         otherStorage.removeItem('user');
                         otherStorage.removeItem('sidebar');
                         otherStorage.removeItem('permisos');
                         
-                        // Set auth header globally immediately just in case
-                        window.axios.defaults.headers.common['Authorization'] = `Bearer ${payload.token}`;
+                        // Update React Context state to prevent layout bouncing us back to login
+                        setUser(payload.user);
+                        setSidebar(payload.sidebar);
+                        setPermisos(payload.permisos);
+
                         navigate('/dashboard');
                     }
         } catch (err) {

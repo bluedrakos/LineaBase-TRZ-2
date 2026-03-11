@@ -14,10 +14,15 @@ export default function PasswordOTPForm({ token, password, confirmPassword }) {
 
     const handleOtpSubmit = async () => {
         try {
-            await router.post('/reset-password/cambiar-password/' + token + '/reset', {
+            await router.post(`/api/v1/auth/cambiar-password/${token}/reset`, {
                 password: password,
                 password_confirmation: confirmPassword,
                 otp,
+            }, {
+                onSuccess: () => {
+                    toast.success('Contraseña cambiada con éxito');
+                    router.visit('/login');
+                }
             });
         } catch {
             toast.error('Ocurrió un error inesperado');
@@ -27,7 +32,7 @@ export default function PasswordOTPForm({ token, password, confirmPassword }) {
     const handleResendOtp = async () => {
         try {
             await router.post(
-                '/reset-password/cambiar-password/' + token + '/reenviar',
+                `/api/v1/auth/cambiar-password/${token}/reenviar`,
                 {},
                 {
                     onSuccess: () =>

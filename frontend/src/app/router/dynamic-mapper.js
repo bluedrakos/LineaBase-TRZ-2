@@ -7,7 +7,10 @@ export function getComponentFromUrl(path) {
     }
 
     if (p.includes('login') || p === '/login') return 'Auth/Login';
-    if (p.includes('reset-password')) return 'Auth/ResetPassword';
+    if (p.includes('reset-password/olvide-password')) return 'Password/OlvidePassword';
+    if (p.includes('reset-password/cambiar-password')) return 'Password/NuevaPassword';
+    if (p.includes('reset-password/restablecer')) return 'Password/NuevaPassword';
+    if (p.includes('reset-password')) return 'Password/OlvidePassword';
 
     // Casos especiales de Core
     if (p.includes('usuarios')) {

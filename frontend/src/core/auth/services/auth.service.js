@@ -1,7 +1,6 @@
 import { apiClient, getApiData } from '@/shared/lib/api-client';
 
 const STORAGE_KEYS = {
-    token: 'token',
     user: 'user',
     sidebar: 'sidebar',
     permisos: 'permisos',
@@ -27,9 +26,6 @@ export async function logoutApi() {
 }
 
 export function persistAuthSession(data) {
-    if (data?.token) {
-        window.localStorage.setItem(STORAGE_KEYS.token, data.token);
-    }
     persistAuthContext(data);
 }
 

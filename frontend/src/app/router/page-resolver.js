@@ -12,6 +12,7 @@ const coreDomainAliases = {
     errors: 'errores',
     errores: 'errores',
     resetpassword: 'password',
+    password: 'password',
     dashboard: 'panel',
     panel: 'panel',
     usuarios: 'usuarios',

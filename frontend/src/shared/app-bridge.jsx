@@ -15,11 +15,9 @@ export const Link = forwardRef(({ href, as, children, ...props }, ref) => {
             if (props.method === 'post' && href === '/logout') {
                 await axios.post('/api/v1/auth/logout');
                 logoutContext();
-                localStorage.removeItem('token');
                 localStorage.removeItem('user');
                 localStorage.removeItem('sidebar');
                 localStorage.removeItem('permisos');
-                sessionStorage.removeItem('token');
                 sessionStorage.removeItem('user');
                 sessionStorage.removeItem('sidebar');
                 sessionStorage.removeItem('permisos');
@@ -68,10 +66,55 @@ export function usePage() {
 // Idealmente se debería usar useNavigate en componentes, pero proveemos esto como bridge temporal.
 export const router = {
     visit: (url) => {
-        // En un hook usaríamos useNavigate. 
-        // Para compatibilidad global podemos cambiar window location o interceptar un router history.
-        // Dado que somos una SPA limpia ahora, esto asume que en el fondo el usuario migrará a useNavigate.
-        window.location.href = url; // fallback fuerte (o usa history API)
+        window.location.href = url;
+    },
+    post: (url, data, options = {}) => {
+        return axios.post(url, data)
+            .then(res => {
+                options.onSuccess?.(res);
+                return res;
+            })
+            .catch(err => {
+                options.onError?.(err.response?.data?.errors || err);
+                throw err;
+            })
+            .finally(() => options.onFinish?.());
+    },
+    put: (url, data, options = {}) => {
+        return axios.put(url, data)
+            .then(res => {
+                options.onSuccess?.(res);
+                return res;
+            })
+            .catch(err => {
+                options.onError?.(err.response?.data?.errors || err);
+                throw err;
+            })
+            .finally(() => options.onFinish?.());
+    },
+    patch: (url, data, options = {}) => {
+        return axios.patch(url, data)
+            .then(res => {
+                options.onSuccess?.(res);
+                return res;
+            })
+            .catch(err => {
+                options.onError?.(err.response?.data?.errors || err);
+                throw err;
+            })
+            .finally(() => options.onFinish?.());
+    },
+    delete: (url, options = {}) => {
+        return axios.delete(url)
+            .then(res => {
+                options.onSuccess?.(res);
+                return res;
+            })
+            .catch(err => {
+                options.onError?.(err.response?.data?.errors || err);
+                throw err;
+            })
+            .finally(() => options.onFinish?.());
     }
 };
 

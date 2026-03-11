@@ -47,12 +47,12 @@ class BienvenidaMailable extends Mailable implements ShouldQueue
         // El contenido específico del correo dependiendo del tipo de usuario.
         if ($this->usu_tipo == 'Interno') {
             return new Content(
-                view: 'emails.bienvenidaInterno',
+                view: 'emails.BienvenidaInterno',
                 with: ['usu_nombre' => $this->usu_nombre]
             );
         } else {
             return new Content(
-                view: 'emails.bienvenidaExterno',
+                view: 'emails.BienvenidaExterno',
                 with: [
                     'usu_correo' => $this->usu_correo,
                     'password' => $this->password,

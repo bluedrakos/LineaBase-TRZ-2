@@ -1,4 +1,4 @@
-﻿import {
+import {
     createUsuario,
     updateUsuario,
 } from '@/core/usuarios/services/usuarios.service';
@@ -12,6 +12,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { format } from 'rut.js';
 import { toast } from 'sonner';
+import { HttpStatus, ResponseManager } from '@/shared/lib/ResponseManager';
 
 import AccountDataFields from './AccountDataFields';
 import PersonalDataFields from './PersonalDataFields';
@@ -111,7 +112,7 @@ export default function FormularioUsuario({
             setValue('usu_tipo', 'Externo');
         }
 
-        toast.success('Datos cargados desde Agenda');
+        toast.success(ResponseManager.getMessage(HttpStatus.OK));
     };
 
     useEffect(() => {
@@ -131,17 +132,17 @@ export default function FormularioUsuario({
         try {
             if (usuarioEdit?.usu_id) {
                 await updateUsuario(usuarioEdit.usu_id, cleanedData);
-                toast.success('Usuario actualizado exitosamente');
+                toast.success(ResponseManager.getMessage(HttpStatus.OK));
             } else {
                 await createUsuario(cleanedData);
-                toast.success('Usuario creado exitosamente');
+                toast.success(ResponseManager.getMessage(HttpStatus.CREATED));
             }
             await onSaved?.();
             onSuccess?.();
         } catch (err) {
             const errores = Object.values(err.errors || {}).flat();
             toast.error(
-                errores[0] || err.message || 'Ocurrió un error al guardar.',
+                errores[0] || err.message || ResponseManager.getMessage(err),
             );
         } finally {
             setLoading(false);

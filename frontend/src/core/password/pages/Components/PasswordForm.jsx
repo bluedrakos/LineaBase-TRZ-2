@@ -1,4 +1,4 @@
-﻿import { usePasswordBarra } from '@/core/password/pages/hooks/usePasswordBarra';
+﻿import { usePasswordBarra } from '@/core/password/hooks/usePasswordBarra';
 import { passwordSchema } from '@/shared/schemas/usuario.schema.js';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
@@ -20,17 +20,23 @@ export default function PasswordForm({ token, onSuccess }) {
     const { progreso, reglas } = usePasswordBarra(password, confirmPassword);
 
     const handlePasswordSubmit = async (data) => {
+        const id = toast.loading('Enviando código...');
         try {
             await router.post(
-                '/reset-password/cambiar-password/' + token,
+                `/api/v1/auth/cambiar-password/${token}`,
                 {
                     password: data.password,
                     password_confirmation: data.confirmPassword,
                 },
-                { onSuccess: () => onSuccess(data) },
+                {
+                    onSuccess: () => {
+                        toast.success('Código enviado a tu correo', { id });
+                        onSuccess(data);
+                    },
+                },
             );
         } catch (error) {
-            toast.error('Ocurrió un error inesperado');
+            toast.error('Ocurrió un error inesperado', { id });
         }
     };
 

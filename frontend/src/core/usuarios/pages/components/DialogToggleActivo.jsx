@@ -4,6 +4,7 @@ import DialogBase from '@/shared/components/dialogs/DialogBase';
 import { Button } from '@/shared/ui/button';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { HttpStatus, ResponseManager } from '@/shared/lib/ResponseManager';
 
 export default function DialogToggleActivo({
     open,
@@ -18,19 +19,12 @@ export default function DialogToggleActivo({
         setLoading(true);
         try {
             await toggleUsuarioActivo(usuario.usu_id);
-            toast.success(
-                usuario.usu_activo
-                    ? 'Usuario desactivado correctamente'
-                    : 'Usuario activado correctamente',
-            );
+            toast.success(ResponseManager.getMessage(HttpStatus.OK));
             onOpenChange(false);
             await onSuccess?.();
         } catch (error) {
             toast.error(
-                error.message ||
-                    (usuario.usu_activo
-                        ? 'Error al desactivar usuario'
-                        : 'Error al activar usuario'),
+                error.message || ResponseManager.getMessage(error),
             );
         } finally {
             setLoading(false);

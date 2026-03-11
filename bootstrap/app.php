@@ -23,5 +23,45 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
-    })->create(); 
+        $exceptions->render(function (\Throwable $e, \Illuminate\Http\Request $request) {
+            if ($request->is('api/*') || $request->wantsJson()) {
+                $status = 500;
+                $message = 'Error Interno del Servidor';
+                $errors = [];
+
+                if ($e instanceof \Illuminate\Validation\ValidationException) {
+                    $status = $e->status;
+                    $message = $e->getMessage();
+                    $errors = $e->errors();
+                } elseif ($e instanceof \Illuminate\Auth\AuthenticationException) {
+                    $status = 401;
+                    $message = 'No autenticado.';
+                } elseif ($e instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException || $e instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
+                    $status = 404;
+                    $message = 'El recurso solicitado no fue encontrado.';
+                }
+                
+                if ($e instanceof \Symfony\Component\HttpKernel\Exception\HttpExceptionInterface) {
+                    $status = $e->getStatusCode();
+                    $message = $e->getMessage() ?: \Symfony\Component\HttpFoundation\Response::$statusTexts[$status] ?? 'HttException';
+                }
+
+                // Si estamos en entorno Dev, agregamos el log completo del error
+                if (config('app.debug') && config('app.env') !== 'testing' && $status >= 500) {
+                    $message = $e->getMessage();
+                    $errors = [
+                        'exception' => get_class($e),
+                        'file' => $e->getFile(),
+                        'line' => $e->getLine(),
+                        'trace' => collect($e->getTrace())->map(fn ($trace) => \Illuminate\Support\Arr::except($trace, ['args']))->all(),
+                    ];
+                }
+
+                return response()->json([
+                    'success' => false,
+                    'message' => $message,
+                    'errors' => (object) $errors,
+                ], $status);
+            }
+        });
+    })->create();

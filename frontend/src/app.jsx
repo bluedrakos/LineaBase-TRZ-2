@@ -16,11 +16,14 @@ function initApp() {
     const path = window.location.pathname;
 
     // Validación de sesión básica
-    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-    const isAuthRoute = path.startsWith('/login') || path.startsWith('/password') || path === '/';
+    const user = localStorage.getItem('user') || sessionStorage.getItem('user');
+    const isAuthRoute = path.startsWith('/login') || 
+                        path.startsWith('/password') || 
+                        path.startsWith('/reset-password') || 
+                        path === '/';
     
     // Si no hay token y no es una ruta pública, obligamos a login
-    if (!token && !isAuthRoute) {
+    if (!user && !isAuthRoute) {
         window.location.href = '/login';
         return;
     }

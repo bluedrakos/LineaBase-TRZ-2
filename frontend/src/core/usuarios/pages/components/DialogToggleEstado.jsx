@@ -4,6 +4,7 @@ import DialogBase from '@/shared/components/dialogs/DialogBase';
 import { Button } from '@/shared/ui/button';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { HttpStatus, ResponseManager } from '@/shared/lib/ResponseManager';
 
 export default function DialogToggleEstado({
     open,
@@ -29,19 +30,12 @@ export default function DialogToggleEstado({
         setLoading(true);
         try {
             await toggleUsuarioEstado(usuario.usu_id);
-            toast.success(
-                estaHabilitado
-                    ? 'Usuario deshabilitado correctamente'
-                    : 'Usuario habilitado correctamente',
-            );
+            toast.success(ResponseManager.getMessage(HttpStatus.OK));
             onOpenChange(false);
             await onSuccess?.();
         } catch (error) {
             toast.error(
-                error.message ||
-                    (estaHabilitado
-                        ? 'Error al deshabilitar usuario'
-                        : 'Error al habilitar usuario'),
+                error.message || ResponseManager.getMessage(error),
             );
             onOpenChange(false);
         } finally {
