@@ -1,9 +1,11 @@
-﻿import { Checkbox } from '@/shared/ui/checkbox';
+import { Checkbox } from '@/shared/ui/checkbox';
 import { CeldaAcciones } from './CeldaAcciones';
 
-export function GenerarColumnas({ extra = [], permisosAcciones }) {
-    return [
-        {
+export function GenerarColumnas({ extra = [], permisosAcciones, conSeleccion = false }) {
+    const columnas = [];
+
+    if (conSeleccion) {
+        columnas.push({
             id: 'seleccionar',
             header: ({ table }) => (
                 <Checkbox
@@ -24,7 +26,11 @@ export function GenerarColumnas({ extra = [], permisosAcciones }) {
             ),
             enableSorting: false,
             enableHiding: false,
-        },
+        });
+    }
+
+    return [
+        ...columnas,
         ...extra,
         {
             id: 'acciones',

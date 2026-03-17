@@ -74,9 +74,12 @@ const browserRouter = createBrowserRouter([
     }
 ]);
 
+import { Toaster } from 'sonner';
+
 export function AppRouter() {
     return (
         <HelmetProvider>
+            <Toaster position="top-right" />
             <RouterProvider router={browserRouter} />
         </HelmetProvider>
     );

@@ -25,5 +25,13 @@ class TipoModuloSeeder extends Seeder
             'tmo_activo' => true,
             'tmo_creado_por' => 1,
         ]);
+        TipoModulo::create([
+            'tmo_nombre' => 'Desarrollo',
+            'tmo_slug' => 'desarrollo',
+            'tmo_icono' => 'Code',
+            'tmo_orden' => 10,
+            'tmo_activo' => true,
+            'tmo_creado_por' => 1,
+        ]);
     }
 }

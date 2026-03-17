@@ -63,5 +63,14 @@ class ModuloSeeder extends Seeder
             'tmo_id' => null,
             'mod_creado_por' => 1,
         ]);
+        Modulo::create([
+            'mod_nombre' => 'Sistemas',
+            'mod_slug' => 'sistemas',
+            'mod_icono' => 'Pcpu',
+            'mod_orden' => 7,
+            'mod_activo' => true,
+            'tmo_id' => 3, // ID de Desarrollo
+            'mod_creado_por' => 1,
+        ]);
     }
 }

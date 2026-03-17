@@ -1,4 +1,4 @@
-﻿import { Button } from '@/shared/ui/button';
+import { Button } from '@/shared/ui/button';
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -146,9 +146,16 @@ export function TablaDatosGenerica({
                             const optionsSource =
                                 meta.filterOptions || meta.options;
 
-                            const options =
-                                optionsSource ||
-                                Array.from(uniqueValues.keys())
+                            let options = [];
+                            if (optionsSource) {
+                                // Inyectar conteo en opciones personalizadas
+                                options = optionsSource.map((opt) => ({
+                                    ...opt,
+                                    count: uniqueValues.get(opt.value) || 0,
+                                }));
+                            } else {
+                                // Generar opciones basadas en valores únicos si no hay personalizadas
+                                options = Array.from(uniqueValues.keys())
                                     .map((val) => ({
                                         label: val,
                                         value: val,
@@ -160,6 +167,7 @@ export function TablaDatosGenerica({
                                             opt.value !== undefined &&
                                             opt.value !== '',
                                     );
+                            }
 
                             return (
                                 <FacetedFilter

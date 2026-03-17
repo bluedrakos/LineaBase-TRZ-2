@@ -15,6 +15,7 @@ Route::prefix('v1')->group(function () {
         require __DIR__ . '/api/core/modulos.php';
         require __DIR__ . '/api/core/instituciones.php';
         require __DIR__ . '/api/core/auditorias.php';
+        require __DIR__ . '/api/core/sistemas.php';
 
         // Rutas de los módulos a desarrollar estan dentro de modules
 

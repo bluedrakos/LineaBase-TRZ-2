@@ -20,6 +20,7 @@ const coreDomainAliases = {
     modulos: 'modulos',
     instituciones: 'instituciones',
     auditorias: 'auditorias',
+    sistemas: 'sistemas',
 };
 
 function normalize(segment = '') {
