@@ -6,7 +6,7 @@ import { Label } from '@/shared/ui/label';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { router } from '@/shared/app-bridge';
 import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
+import { toast } from '@/shared/lib/toast';
 import PasswordBarra from './PasswordBarra';
 import PasswordReglas from './PasswordReglas';
 

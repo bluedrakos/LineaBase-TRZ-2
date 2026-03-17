@@ -3,7 +3,7 @@ import CargandoDialog from '@/shared/components/dialogs/CargandoDialog';
 import DialogBase from '@/shared/components/dialogs/DialogBase';
 import { Button } from '@/shared/ui/button';
 import { useState } from 'react';
-import { toast } from 'sonner';
+import { toast } from '@/shared/lib/toast';
 
 export default function DialogToggleActivoModulo({
     open,

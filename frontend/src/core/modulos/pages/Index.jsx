@@ -10,7 +10,7 @@ import { Head, usePage } from '@/shared/app-bridge';
 import { useAuth } from '@/shared/contexts/AuthContext';
 import { Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { toast } from 'sonner';
+import { toast } from '@/shared/lib/toast';
 import DialogCrearModulo from './components/DialogCrearModulo';
 import DialogToggleActivoModulo from './components/DialogToggleActivoModulo';
 import { ModuloTablaConfig } from './components/ModuloTablaConfig';

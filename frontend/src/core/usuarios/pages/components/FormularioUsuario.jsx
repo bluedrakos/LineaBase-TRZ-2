@@ -11,7 +11,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { format } from 'rut.js';
-import { toast } from 'sonner';
+import { toast } from '@/shared/lib/toast';
 import { HttpStatus, ResponseManager } from '@/shared/lib/ResponseManager';
 
 import AccountDataFields from './AccountDataFields';

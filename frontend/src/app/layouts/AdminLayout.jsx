@@ -62,7 +62,7 @@ export default function LayoutDashboard({ children }) {
                     <AppSidebar user={user} logout={props.logout} navItems={navItems} />
 
                     <SidebarInset className="flex flex-col h-screen overflow-hidden">
-                        <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center justify-between gap-2 border-b bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+                        <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center justify-between gap-2 border-b bg-background/95 px-4 backdrop-blur supports-backdrop-filter:bg-background/60 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
                             {/* Breadcrumbs + trigger */}
                             <div className="flex items-center gap-2 px-4">
                                 <SidebarTrigger className="-ml-1" />

@@ -11,7 +11,8 @@ import { Label } from '@/shared/ui/label';
 import { router, usePage } from '@/shared/app-bridge';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { toast, Toaster } from 'sonner';
+import { toast } from '@/shared/lib/toast';
+import { Toaster } from '@/shared/ui/sonner';
 
 export default function OlvidePassword() {
     const { props } = usePage();

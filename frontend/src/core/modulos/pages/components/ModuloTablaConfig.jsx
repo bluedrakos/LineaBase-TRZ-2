@@ -2,7 +2,7 @@ import { usePermisos } from '@/core/auth/hooks/usePermisos';
 import { deleteModulo } from '@/core/modulos/services/modulos.service';
 import { GenerarColumnas } from '@/shared/components/data-table/GenerarColumnas';
 import * as Icons from 'lucide-react';
-import { toast } from 'sonner';
+import { toast } from '@/shared/lib/toast';
 
 export function ModuloTablaConfig({
     setAbrirCrear,

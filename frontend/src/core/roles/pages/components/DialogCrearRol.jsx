@@ -18,7 +18,7 @@ import { Textarea } from '@headlessui/react';
 import * as Icons from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
-import { toast } from 'sonner';
+import { toast } from '@/shared/lib/toast';
 
 export default function DialogCrearRol({
     open,

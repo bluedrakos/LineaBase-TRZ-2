@@ -9,7 +9,8 @@ import {
 import { usePage } from '@/shared/app-bridge';
 import { ChevronLeft } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Toaster, toast } from 'sonner';
+import { toast } from '@/shared/lib/toast';
+import { Toaster } from '@/shared/ui/sonner';
 import PasswordForm from './components/PasswordForm';
 import PasswordOTPForm from './components/PasswordOTPForm';
 

@@ -24,7 +24,7 @@ import {
 } from '@/shared/ui/select';
 import * as Icons from 'lucide-react';
 import React, { useEffect, useMemo, useState } from 'react';
-import { toast } from 'sonner';
+import { toast } from '@/shared/lib/toast';
 import IconPicker from './IconPicker';
 import DialogTipoModuloSimple from './DialogTipoModuloSimple';
 

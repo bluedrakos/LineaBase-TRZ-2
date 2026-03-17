@@ -6,7 +6,7 @@ import { Button } from '@/shared/ui/button';
 import { Head } from '@/shared/app-bridge';
 import { Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { toast } from 'sonner';
+import { toast } from '@/shared/lib/toast';
 import DialogCrearInstitucion from './Components/DialogCrearInstitucion';
 import { InstitucionTablaConfig } from './Components/InstitucionTablaConfig';
 

@@ -74,7 +74,7 @@ const browserRouter = createBrowserRouter([
     }
 ]);
 
-import { Toaster } from 'sonner';
+import { Toaster } from '@/shared/ui/sonner';
 
 export function AppRouter() {
     return (

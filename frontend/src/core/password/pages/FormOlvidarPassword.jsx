@@ -11,7 +11,8 @@ import {
 import { usePage } from '@/shared/app-bridge';
 import { ChevronLeft } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Toaster, toast } from 'sonner';
+import { toast } from '@/shared/lib/toast';
+import { Toaster } from '@/shared/ui/sonner';
 
 export default function NuevaPassword({ token }) {
     const { props } = usePage();

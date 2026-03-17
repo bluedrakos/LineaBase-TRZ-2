@@ -9,7 +9,7 @@ import {
 } from '@/shared/ui/dialog';
 import { Head, usePage } from '@/shared/app-bridge';
 import { useEffect, useState } from 'react';
-import { toast } from 'sonner';
+import { toast } from '@/shared/lib/toast';
 import { AuditoriaTablaConfig } from './components/AuditoriaTablaConfig';
 
 export default function Index() {

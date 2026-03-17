@@ -7,7 +7,7 @@ import {
 } from '@/shared/ui/input-otp';
 import { router } from '@/shared/app-bridge';
 import { useState } from 'react';
-import { toast } from 'sonner';
+import { toast } from '@/shared/lib/toast';
 
 export default function PasswordOTPForm({ token, password, confirmPassword }) {
     const [otp, setOtp] = useState('');

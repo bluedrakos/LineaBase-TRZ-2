@@ -1,21 +1,10 @@
-import { useTheme } from 'next-themes';
-import { Toaster as Sonner } from 'sonner';
+import { useTheme } from '@/shared/hooks/useTheme';
+import { Toaster as SileoToaster } from 'sileo';
 
-const Toaster = ({ ...props }) => {
+const Toaster = ({ richColors: _richColors, ...props }) => {
     const { theme = 'system' } = useTheme();
 
-    return (
-        <Sonner
-            theme={theme}
-            className="toaster group"
-            style={{
-                '--normal-bg': 'var(--popover)',
-                '--normal-text': 'var(--popover-foreground)',
-                '--normal-border': 'var(--border)',
-            }}
-            {...props}
-        />
-    );
+    return <SileoToaster theme={theme} {...props} />;
 };
 
 export { Toaster };
