@@ -50,11 +50,11 @@ class PasswordResetMail extends Mailable implements ShouldQueue
     {
         if ($this->usu_tipo == 'Interno') {
             return new Content(
-                view: 'emails.PasswordInterno',
+                view: 'emails.passwordInterno',
             );
         } else {
             return new Content(
-                view: 'emails.PasswordExterno',
+                view: 'emails.passwordExterno',
                 with: [
                     'usu_correo' => $this->usu_correo,
                     'changePasswordLink' => $this->changePasswordLink

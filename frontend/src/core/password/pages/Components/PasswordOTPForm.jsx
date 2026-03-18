@@ -1,54 +1,75 @@
-﻿import { Button } from '@/shared/ui/button';
+import { router } from '@/shared/app-bridge';
+import { toast } from '@/shared/lib/toast';
+import { Button } from '@/shared/ui/button';
 import {
     InputOTP,
     InputOTPGroup,
     InputOTPSeparator,
     InputOTPSlot,
 } from '@/shared/ui/input-otp';
-import { router } from '@/shared/app-bridge';
 import { useState } from 'react';
-import { toast } from '@/shared/lib/toast';
 
-export default function PasswordOTPForm({ token, password, confirmPassword }) {
+export default function PasswordOTPForm({
+    token,
+    password,
+    confirmPassword,
+    onSubmit,
+    onResend,
+    submitLabel = 'Confirmar y guardar contraseña',
+    resendLabel = 'Reenviar codigo',
+    otpError,
+    disabled = false,
+}) {
     const [otp, setOtp] = useState('');
 
     const handleOtpSubmit = async () => {
+        const payload = {
+            password,
+            password_confirmation: confirmPassword,
+            otp,
+        };
+
         try {
-            await router.post(`/api/v1/auth/cambiar-password/${token}/reset`, {
-                password: password,
-                password_confirmation: confirmPassword,
-                otp,
-            }, {
+            if (onSubmit) {
+                await onSubmit(payload, { otp });
+                return;
+            }
+
+            await router.post(`/api/v1/auth/cambiar-password/${token}/reset`, payload, {
                 onSuccess: () => {
                     toast.success('Contraseña cambiada con éxito');
                     router.visit('/login');
-                }
+                },
             });
         } catch {
-            toast.error('Ocurrió un error inesperado');
+            if (!onSubmit) {
+                toast.error('Ocurrio un error inesperado');
+            }
         }
     };
 
     const handleResendOtp = async () => {
         try {
-            await router.post(
-                `/api/v1/auth/cambiar-password/${token}/reenviar`,
-                {},
-                {
-                    onSuccess: () =>
-                        toast.success('Nuevo código enviado a tu correo'),
-                    onError: () => toast.error('Error al reenviar el código'),
-                },
-            );
+            if (onResend) {
+                await onResend();
+                return;
+            }
+
+            await router.post(`/api/v1/auth/cambiar-password/${token}/reenviar`, {}, {
+                onSuccess: () => toast.success('Nuevo codigo enviado a tu correo'),
+                onError: () => toast.error('Error al reenviar el codigo'),
+            });
         } catch {
-            toast.error('Error inesperado');
+            if (!onResend) {
+                toast.error('Error inesperado');
+            }
         }
     };
 
     return (
         <form
-            onSubmit={(e) => {
-                e.preventDefault();
+            onSubmit={(event) => {
+                event.preventDefault();
                 handleOtpSubmit();
             }}
         >
@@ -58,20 +79,21 @@ export default function PasswordOTPForm({ token, password, confirmPassword }) {
                     value={otp}
                     onChange={setOtp}
                     className="gap-3"
+                    disabled={disabled}
                 >
                     <InputOTPGroup className="gap-3">
-                        {[0, 1, 2].map((i) => (
+                        {[0, 1, 2].map((index) => (
                             <InputOTPSlot
-                                key={i}
-                                index={i}
+                                key={index}
+                                index={index}
                                 className="h-14 w-10 text-2xl"
                             />
                         ))}
                         <InputOTPSeparator />
-                        {[3, 4, 5].map((i) => (
+                        {[3, 4, 5].map((index) => (
                             <InputOTPSlot
-                                key={i}
-                                index={i}
+                                key={index}
+                                index={index}
                                 className="h-14 w-10 text-2xl"
                             />
                         ))}
@@ -79,17 +101,24 @@ export default function PasswordOTPForm({ token, password, confirmPassword }) {
                 </InputOTP>
             </div>
 
+            {otpError ? (
+                <p className="text-destructive mt-3 text-center text-sm">
+                    {otpError}
+                </p>
+            ) : null}
+
             <div className="mt-6 flex flex-col gap-3">
-                <Button type="submit" className="w-full p-6 text-lg">
-                    Confirmar y guardar contraseña
+                <Button type="submit" className="w-full p-6 text-lg" disabled={disabled}>
+                    {submitLabel}
                 </Button>
                 <Button
                     type="button"
                     variant="outline"
                     onClick={handleResendOtp}
                     className="p-6 text-lg"
+                    disabled={disabled}
                 >
-                    Reenviar código
+                    {resendLabel}
                 </Button>
             </div>
         </form>

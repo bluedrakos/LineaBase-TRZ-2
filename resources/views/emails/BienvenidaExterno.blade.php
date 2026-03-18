@@ -1,154 +1,100 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="es">
 <head>
-    <title>Bienvenido a Mitra</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900" rel="stylesheet" type="text/css">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Bienvenido a TrackIoT</title>
     <style>
-        * {
-            box-sizing: border-box;
-        }
-        body {
-            margin: 0;
-            padding: 0;
-        }
-        a[x-apple-data-detectors] {
-            color: inherit !important;
-            text-decoration: inherit !important;
-        }
-        #MessageViewBody a {
-            color: inherit;
+        .btn-primary {
+            display: inline-block;
+            background: #003d5b;
+            color: #ffffff !important;
             text-decoration: none;
+            border-radius: 10px;
+            padding: 14px 24px;
+            font-size: 18px;
+            font-weight: 700;
+            transition: background-color .2s ease-in-out;
         }
-        p {
-            line-height: inherit;
-        }
-        .desktop_hide,
-        .desktop_hide table {
-            mso-hide: all;
-            display: none;
-            max-height: 0px;
-            overflow: hidden;
-        }
-        .image_block img+div {
-            display: none;
-        }
-        sup, sub {
-            font-size: 75%;
-            line-height: 0;
-        }
-        @media (max-width: 690px) {
-            .desktop_hide table.icons-inner {
-                display: inline-block !important;
-            }
-            .icons-inner {
-                text-align: center;
-            }
-            .icons-inner td {
-                margin: 0 auto;
-            }
-            .mobile_hide {
-                display: none;
-            }
-            .row-content {
-                width: 100% !important;
-            }
-            .stack .column {
-                width: 100%;
-                display: block;
-            }
-            .mobile_hide {
-                min-height: 0;
-                max-height: 0;
-                max-width: 0;
-                overflow: hidden;
-                font-size: 0px;
-            }
-            .desktop_hide,
-            .desktop_hide table {
-                display: table !important;
-                max-height: none !important;
-            }
+        .btn-primary:hover {
+            background: #0a577c !important;
         }
     </style>
 </head>
-<body style="background-color: #f9f9f9; margin: 0; padding: 0; -webkit-text-size-adjust: none; text-size-adjust: none;">
-    <table class="nl-container" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f9f9f9;">
-        <tbody>
-            <tr>
-                <td>
-                    <table class="row row-1" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff;">
-                        <tbody>
+<body style="margin:0;padding:0;background:#f3f4f6;font-family:Arial,Helvetica,sans-serif;color:#0f172a;">
+@php
+    $platformUrl = config('app.url') ?: 'https://www.trackiot.com';
+@endphp
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f3f4f6;padding:24px 12px;">
+    <tr>
+        <td align="center">
+            <table role="presentation" width="640" cellpadding="0" cellspacing="0" border="0" style="max-width:640px;width:100%;background:#ffffff;border-radius:8px;overflow:hidden;">
+                <tr>
+                    <td style="padding:28px 24px 18px 24px;text-align:center;">
+                        <img src="https://res.cloudinary.com/dbltaelkk/image/upload/v1773255155/svgviewer-png-output_hy4udq.png" alt="TrackIoT" width="210" style="display:inline-block;border:0;outline:none;text-decoration:none;">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="background:#003d5b;padding:40px 36px;">
+                        <h1 style="margin:0;color:#ffffff;font-size:44px;line-height:1.1;font-weight:700;text-align:center;">
+                            &iexcl;Bienvenido a TrackIoT!
+                        </h1>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="padding:30px 36px 12px 36px;">
+                        <p style="margin:0 0 14px 0;color:#003d5b;font-size:40px;line-height:1.15;font-weight:700;text-align:center;">
+                            Tu cuenta ha sido creada con &eacute;xito.
+                        </p>
+                        <p style="margin:0 0 22px 0;color:#334155;font-size:24px;line-height:1.4;text-align:center;">
+                            Hola {{ $usu_nombre }}, estas son tus credenciales de acceso:
+                        </p>
+
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f8fafc;border:1px solid #d7e1e8;border-radius:10px;">
                             <tr>
-                                <td>
-                                    <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff; color: #000000; width: 670px; margin: 0 auto;" width="670">
-                                        <tbody>
-                                            <tr>
-                                                <td class="column column-1" width="50%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top;">
-                                                    <div class="spacer_block block-1" style="height:30px;line-height:30px;font-size:1px;">&#8202;</div>
-                                                    <table class="paragraph_block block-2" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
-                                                        <tr>
-                                                            <td class="pad" style="padding-bottom:10px;padding-left:25px;padding-right:10px;padding-top:10px;">
-                                                                <div style="color:#61697a;font-family:Montserrat, Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;font-size:14px;line-height:1.2;text-align:left;mso-line-height-alt:17px;">
-                                                                    <p style="margin: 0; word-break: break-word;">Hola {{$usu_nombre}},</p>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    </table>
-                                                    <table class="paragraph_block block-3" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
-                                                        <tr>
-                                                            <td class="pad" style="padding-bottom:10px;padding-left:25px;padding-right:25px;padding-top:10px;">
-                                                                <div style="color:#1f0b0b;font-family:Montserrat, Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;font-size:46px;line-height:1.2;text-align:left;mso-line-height-alt:55px;">
-                                                                    <p style="margin: 0; word-break: break-word;"><strong>Bienvenido a MITRA!</strong></p>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    </table>
-                                                    <table class="paragraph_block block-4" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
-                                                        <tr>
-                                                            <td class="pad" style="padding-bottom:25px;padding-left:25px;padding-right:25px;padding-top:10px;">
-                                                                <div style="color:#393d47;font-family:Montserrat, Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;font-size:14px;line-height:1.5;text-align:left;mso-line-height-alt:21px;">
-                                                                    <p style="margin: 0; word-break: break-word;">Aquí están tus credenciales para iniciar sesión:</p>
-                                                                    <p style="margin: 0; word-break: break-word;">Email: {{ $usu_correo }}</p>
-                                                                    <p style="margin: 0; word-break: break-word;">Password: {{ $password }}</p>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    </table>
-                                                    <table class="button_block block-5" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                                                        <tr>
-                                                            <td class="pad" style="padding-bottom:10px;padding-left:20px;padding-right:10px;padding-top:10px;text-align:left;">
-                                                                <div class="alignment" align="left">
-                                                                    <a href="{{ $changePasswordLink }}" style="background-color: #5855bd; border-radius: 4px; color: #ffffff; display: inline-block; font-family: Montserrat, sans-serif; font-size: 16px; padding: 10px 45px; text-align: center; text-decoration: none;"><strong>Cambiar contraseña</strong></a>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    </table>
-                                                </td>
-                                                <td class="column column-2" width="50%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top;">
-                                                    <div class="spacer_block block-1" style="height:50px;line-height:50px;font-size:1px;">&#8202;</div>
-                                                    <table class="image_block block-4" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                                                        <tr>
-                                                            <td class="pad" style="padding-right:5px;width:100%; display: block; text-align: center;">
-                                                                    <img src="https://jvillegascmch.github.io/mitra/mitraEmail.png" 
-                                                                        alt="Logo Mitra" 
-                                                                        width="120" 
-                                                                        style="display:block; margin:auto;" />
-                                                            </td>
-                                                        </tr>
-                                                    </table>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                <td style="padding:16px 18px;">
+                                    <p style="margin:0 0 8px 0;color:#334155;font-size:18px;"><strong>Email:</strong> {{ $usu_correo }}</p>
+                                    <p style="margin:0;color:#334155;font-size:18px;"><strong>Contrase&ntilde;a temporal:</strong> {{ $password }}</p>
                                 </td>
                             </tr>
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+                        </table>
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="padding:10px 36px 0 36px;">
+                        <div style="text-align:center;">
+                            <a href="{{ $platformUrl }}" class="btn-primary">
+                                Ingresar a la plataforma
+                            </a>
+                        </div>
+                        <div style="height:1px;background:#d7e1e8;margin:20px 0 0 0;"></div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="background:#eef1f4;padding:28px 36px;">
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                                <td align="left" valign="middle">
+                                    <img src="https://res.cloudinary.com/dbltaelkk/image/upload/v1773255175/logocasamoneda_p2fhc9.png" alt="Casa de Moneda Chile" width="84" style="display:block;border:0;outline:none;text-decoration:none;">
+                                </td>
+                                <td align="right" valign="middle">
+                                    <p style="margin:0;color:#003d5b;font-size:30px;line-height:1.1;font-weight:700;text-decoration:underline;">TrackIoT</p>
+                                    <p style="margin:6px 0 0 0;color:#6b7280;font-size:18px;line-height:1.3;">Casa de Moneda Chile</p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
 </body>
 </html>

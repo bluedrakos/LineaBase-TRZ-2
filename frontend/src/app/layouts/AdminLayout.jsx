@@ -4,6 +4,7 @@ import { mapPerfilToNavMain } from '@/app/layouts/sidebar/components/SidebarMap'
 import { ToggleFullscreenButton } from '@/app/layouts/sidebar/components/ToggleFullscreenButton';
 import { AppSidebar } from '@/app/layouts/sidebar/SidebarApp';
 import { SidebarSkeleton } from '@/app/layouts/sidebar/SidebarSkeleton';
+import ForcePasswordChangeDialog from '@/core/auth/components/ForcePasswordChangeDialog';
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -110,6 +111,7 @@ export default function LayoutDashboard({ children }) {
                         <main className="flex-1 overflow-y-auto p-4">
                             <div className="flex flex-col gap-4">
                                 {children}
+                                <ForcePasswordChangeDialog />
                                 <Toaster richColors position="top-right" />
                             </div>
                         </main>

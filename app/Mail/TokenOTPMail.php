@@ -45,10 +45,9 @@ class TokenOTPMail extends Mailable implements ShouldQueue
     public function content(): Content
     {
         return new Content(
-            view: 'emails.PasswordOTP',
+            view: 'emails.passwordOTP',
             with: ['usu_correo' => $this->usu_correo,
                    'tokenOTP' => $this->tokenOTP,]
         );
     }
 }
-
